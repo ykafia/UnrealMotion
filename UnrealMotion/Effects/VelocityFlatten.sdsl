@@ -1,0 +1,50 @@
+shader VelocityFlatten : ImageEffectShader, Math
+{
+
+    // Texture0 : velocity
+    // Texture1 : depth
+    stage override float4 Shading()
+    {
+        float2 pos = streams.TexCoord;
+        //Decode velocity from texture
+        float2 velocity = Texture0.Sample(LinearSampler, pos).xy;
+
+        // Optional remove camera velocity
+        // If the velocity vector was zero length, VelocityPolar will contain NaNs.
+        float2 velocityPolar = CartesianToPolar(velocity);
+        if(any(isnan(velocityPolar)))
+        {
+            velocityPolar = float2(0,0);
+        }
+        float2 encodedPolarVelocity;
+        encodedPolarVelocity.x = velocityPolar.x;
+        encodedPolarVelocity.y = velocityPolar.y * (0.5 / PI) + 0.5;
+        
+        return float3(encodedPolarVelocity, Texture1.Sample(LinearSampler,pos).r).xyzz;        
+    }
+    float2 CartesianToPolar(float2 Velocity)
+    {
+        float Length = length(Velocity);
+        float Angle = atan2Fast(Velocity.y, Velocity.x);
+        return float2(Length, Angle);
+    }
+    float atan2Fast( float y, float x )
+    {
+        float t0 = max( abs(x), abs(y) );
+        float t1 = min( abs(x), abs(y) );
+        float t3 = t1 / t0;
+        float t4 = t3 * t3;
+
+        // Same polynomial as atanFastPos
+        t0 =         + 0.0872929;
+        t0 = t0 * t4 - 0.301895;
+        t0 = t0 * t4 + 1.0;
+        t3 = t0 * t3;
+
+        t3 = abs(y) > abs(x) ? (0.5 * PI) - t3 : t3;
+        t3 = x < 0 ? PI - t3 : t3;
+        t3 = y < 0 ? -t3 : t3;
+
+        return t3;
+    }
+};

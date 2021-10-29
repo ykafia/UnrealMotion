@@ -1,0 +1,11 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 16
+VisualStudioVersion = 16.0.0.0
+MinimumVisualStudioVersion = 16.0.0.0
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnrealMotion.Windows", "UnrealMotion.Windows\UnrealMotion.Windows.csproj", "{D7833DEE-654D-4255-9EBD-731336613772}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnrealMotion", "UnrealMotion\UnrealMotion.csproj", "{4B01B6C4-B89A-42AD-83B8-C6B8DA374D86}"
+EndProject
+Global
+EndGlobal

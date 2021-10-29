@@ -1,0 +1,20 @@
+shader UMotionBlur : ImageEffectShader
+{
+    // cbuffer PerDraw
+    // {
+        
+    // }
+
+
+    // Texture0 : colorBuffer
+    // Texture1 : velocityBuffer
+    // Texture2 : nmax
+    // Texture3 : flattenedV
+    // Texture4 : depthBuffer
+    stage override float4 Shading()
+    {
+        // return Texture0.Sample(LinearSampler, streams.TexCoord.xy);
+        float d = Texture4.Sample(LinearSampler,streams.TexCoord).r;
+        return float4(d,d,d,1);
+    }
+};

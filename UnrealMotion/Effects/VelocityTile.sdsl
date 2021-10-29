@@ -1,0 +1,34 @@
+shader VelocityTile : ImageEffectShader, Math
+{
+
+    cbuffer PerDraw
+    {
+        float u_TileSize = 16;
+    }
+
+
+    // Texture0 : velocity
+    // Texture1 : depth
+    stage override float4 Shading()
+    {
+        float2 uv0 = streams.TexCoord; //+ Texture0TexelSize * _TileMaxOffs.xy;
+
+        float2 du = float2(Texture0TexelSize.x, 0.0);
+        float2 dv = float2(0.0, Texture0TexelSize.y);
+        float2 velocity = float2(0,0);
+        for(int i = 0; i < u_TileSize; i++)
+        {
+            for(int j = 0; j < u_TileSize; j++)
+            {
+                float2 uv = uv0 + du * i + dv * j;
+                velocity = MaxV(velocity,Texture0.Sample(PointSampler, uv).rg);
+            }
+        }
+        
+        return float4(velocity,0,0);       
+    }
+    float2 MaxV(float2 v1, float2 v2)
+    {
+        return dot(v1, v1) < dot(v2, v2) ? v2 : v1;
+    }
+};
